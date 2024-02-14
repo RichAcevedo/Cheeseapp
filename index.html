@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selector de Quesos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Selector de Quesos</h1>
+    <div>
+        <label for="size">Tamaño de la matriz (n x n):</label>
+        <input type="number" id="size" min="1" step="1">
+    </div>
+    <div>
+        <label for="percentage">Porcentaje de quesos malos (%):</label>
+        <input type="number" id="percentage" min="0" max="100" step="1">
+    </div>
+    <button onclick="generateCheeseBoard()">Generar Tablero de Quesos</button>
+    <div id="counters">
+        <p>Quesos Buenos: <span id="good-cheese-count">0</span></p>
+        <p>Quesos Malos: <span id="bad-cheese-count">0</span></p>
+    </div>
+    <div id="cheeseBoard"></div>
+    <script src="script.js"></script>
+</body>
+</html>
