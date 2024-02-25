@@ -2,12 +2,18 @@ let totalBadCheesePercentage = 0;
 let iterations = 0;
 let percentages = [];
 let globalBadCheesePercentage = null;
+let initialBadCheeses = 0;
 
 function generateCheeseBoard(size, percentage) {
   const board = document.getElementById("cheeseBoard");
+  board.className = size > 16 ? "largeGrid" : "";
   const totalCheeses = size * size;
   const badCheeses = Math.floor(totalCheeses * (percentage / 100));
+  initialBadCheeses = badCheeses;
   let cheeses = Array(totalCheeses).fill("good");
+  const gridTemplateColumnsValue = `repeat(${size}, 1fr)`;
+  board.style.gridTemplateColumns = gridTemplateColumnsValue;
+
   for (let i = 0; i < badCheeses; i++) {
     let j;
     do {
@@ -15,10 +21,11 @@ function generateCheeseBoard(size, percentage) {
     } while (cheeses[j] === "bad");
     cheeses[j] = "bad";
   }
+
   cheeses = shuffleArray(cheeses);
-  board.style.gridTemplateColumns = `repeat(${size}, 50px)`;
+
   board.innerHTML = "";
-  cheeses.forEach((type, index) => {
+  cheeses.forEach((type) => {
     const cheeseDiv = document.createElement("div");
     cheeseDiv.className = `cheese ${type}`;
     cheeseDiv.addEventListener("click", function () {
@@ -26,15 +33,16 @@ function generateCheeseBoard(size, percentage) {
     });
     board.appendChild(cheeseDiv);
   });
+
   updateCheeseCounters(0, 0);
 }
 
 function revealCheese(cheeseDiv, type) {
-  /* 
   console.log("Revelando queso:", type);
-  */
   cheeseDiv.classList.add("revealed");
+
   cheeseDiv.textContent = type === "good" ? "B" : "M";
+  cheeseDiv.style.color = "black";
 
   const goodCountElement = document.getElementById("good-cheese-count");
   const badCountElement = document.getElementById("bad-cheese-count");
@@ -58,13 +66,23 @@ function shuffleArray(array) {
   return array;
 }
 
+function revealGeneralPercentage() {
+  document.getElementById("prom-general").style.display = "inline";
+}
+
 function revealAllCheeses() {
-  updateCheeseCounters(0, 0);
   const cheeses = document.querySelectorAll("#cheeseBoard .cheese");
   cheeses.forEach((cheese) => {
-    const type = cheese.classList.contains("good") ? "good" : "bad";
-    revealCheese(cheese, type);
+    if (!cheese.classList.contains("revealed")) {
+      const type = cheese.classList.contains("good") ? "good" : "bad";
+      revealCheese(cheese, type);
+    }
   });
+
+  const totalCheeses = cheeses.length;
+  const badCount = initialBadCheeses;
+  const goodCount = totalCheeses - badCount;
+  updateCheeseCounters(goodCount, badCount, "allRevealed");
 }
 
 function updateCheeseCounters(good, bad, context) {
@@ -89,7 +107,6 @@ function addGoodCheese() {
   count++;
   document.getElementById("good-cheese-count").innerText = count;
   document.getElementById("good-cheese-count-new").innerText = count;
-  updateCheeseCounters();
 }
 
 function addBadCheese() {
@@ -103,20 +120,22 @@ function addBadCheese() {
 function generateFixedCheeseBoard() {
   const board = document.getElementById("cheeseBoardOtra");
   const size = 20;
+  board.className = "fixedGrid";
   const totalCheeses = size * size;
+  const gridTemplateColumnsValue = `repeat(${size}, 1fr)`;
+  board.style.gridTemplateColumns = gridTemplateColumnsValue;
 
   if (globalBadCheesePercentage === null) {
     globalBadCheesePercentage = Math.floor(Math.random() * (30 - 5 + 1)) + 5;
     document.getElementById("prom-general").textContent =
       globalBadCheesePercentage + "%";
-      console.log(globalBadCheesePercentage + "%")
   }
 
   const badCheeses = Math.floor(
     totalCheeses * (globalBadCheesePercentage / 100)
   );
-
   let cheeses = Array(totalCheeses).fill("good");
+
   for (let i = 0; i < badCheeses; i++) {
     let j;
     do {
@@ -126,10 +145,9 @@ function generateFixedCheeseBoard() {
   }
 
   cheeses = shuffleArray(cheeses);
-  board.style.gridTemplateColumns = `repeat(${size}, 50px)`;
   board.innerHTML = "";
 
-  cheeses.forEach((type, index) => {
+  cheeses.forEach((type) => {
     const cheeseDiv = document.createElement("div");
     cheeseDiv.className = `cheese ${type}`;
     cheeseDiv.addEventListener("click", function () {
@@ -142,26 +160,31 @@ function generateFixedCheeseBoard() {
 }
 
 function generateRandomSample() {
-  generateFixedCheeseBoard();
   var sampleSize = parseInt(document.getElementById("sampleSize").value);
-  var cheeses = document.querySelectorAll(
-    "#cheeseBoardOtra .cheese:not(.revealed)"
-  );
+  var cheeses = document.querySelectorAll("#cheeseBoardOtra .cheese");
 
+  cheeses.forEach((cheese) => {
+    cheese.classList.remove("revealed");
+    cheese.textContent = "";
+  });
   cheeses = shuffleArray(Array.from(cheeses));
   sampleSize = Math.min(sampleSize, cheeses.length);
 
   let badCheeseCount = 0;
+  let goodCheeseCount = 0;
 
   for (let i = 0; i < sampleSize; i++) {
-    revealCheese(cheeses[i]);
-    if (cheeses[i].classList.contains("bad")) {
+    let type = cheeses[i].classList.contains("bad") ? "bad" : "good";
+    revealCheese(cheeses[i], type);
+
+    if (type === "bad") {
       badCheeseCount++;
+    } else {
+      goodCheeseCount++;
     }
   }
 
-  let badCheesePercentage =
-    sampleSize > 0 ? (badCheeseCount / sampleSize) * 100 : 0;
+  let badCheesePercentage = (badCheeseCount / sampleSize) * 100;
   percentages.push(badCheesePercentage);
 
   const averagePercentage =
@@ -169,23 +192,21 @@ function generateRandomSample() {
 
   document.getElementById("bad-cheese-percentage-new").textContent =
     badCheesePercentage.toFixed(2) + "%";
-
   document.getElementById("average-porcent").textContent =
     averagePercentage.toFixed(2) + "%";
+  updateCheeseCounters(goodCheeseCount, badCheeseCount, "new");
 }
 
 function resetearPorcentaje() {
   percentages = [];
-
+  document.getElementById("prom-general").style.display = "none";
   globalBadCheesePercentage = null;
   globalBadCheesePercentage = Math.floor(Math.random() * (30 - 5 + 1)) + 5;
   document.getElementById("prom-general").textContent =
     globalBadCheesePercentage ? globalBadCheesePercentage + "%" : "0%";
 
-  /*
   document.getElementById("good-cheese-count-new").textContent = "0";
   document.getElementById("bad-cheese-count-new").textContent = "0";
-  */
   document.getElementById("bad-cheese-percentage-new").textContent = "0%";
   document.getElementById("average-porcent").textContent = "0%";
   generateFixedCheeseBoard();
@@ -198,4 +219,9 @@ function revealRealPercentage() {
   } else {
     document.getElementById("prom-general").textContent = "No establecido";
   }
+}
+
+function applyCheeseConfig() {
+  var config = document.getElementById("cheeseConfig").value.split(",");
+  generateCheeseBoard(parseInt(config[0]), parseInt(config[1]));
 }

@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 20px;
     background-color: #f4f4f4;
     display: flex;
@@ -13,11 +13,12 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    box-sizing: border-box;
+    background-color: #eee6db;
 }
 
 h1 {
     color: #333;
-    margin-bottom: 20px;
 }
 
 div {
@@ -49,10 +50,17 @@ button:hover {
 
 #cheeseBoard, #cheeseBoardOtra {
     display: grid;
-    gap: 5px;
+    gap: 2px; 
     margin-top: 20px;
+    padding: 10px;
     width: 100%;
-    max-width: 350px; 
+    max-width: 95vw;
+    box-sizing: border-box;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+}
+
+.cheeseText {
+    color: black;
 }
 
 .cheese, .good, .bad {
@@ -64,6 +72,9 @@ button:hover {
     font-weight: bold;
     transition: background-color 0.3s ease;
     cursor: pointer;
+    background-size: cover;
+    background-position: center;
+    font-size: 1vw;
 }
 
 .cheese {
@@ -76,6 +87,12 @@ button:hover {
     align-items: center;
     justify-content: center;
     font-size: 20px;
+    font-weight: bold;
+}
+
+.largeGrid .cheese {
+    border-radius: 5px; 
+    gap: 2px;
 }
 
 .revealed {
@@ -91,10 +108,6 @@ button:hover {
     background-image: url('queso-malo.png');
 }
 
-#counters {
-    margin-top: 20px;
-}
-
 #counters p {
     font-size: 16px;
     color: #333;
@@ -102,33 +115,151 @@ button:hover {
 }
 
 .tab {
-    overflow: hidden;
+    display: none;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #eee6db; 
+    z-index: 1001;
+    justify-content: center;
+    padding: 10px 0;
+    background-color: #000033;
+}
+
+.tabcontent {
+    margin-top: 60px; 
+    display: none;
+    padding: 6px 12px;
     border: 1px solid #ccc;
-    background-color: #008cba;
-  }
-  
-  .tab button {
-    background-color: inherit;
-    float: left;
+    border-top: none;
+    background-color: #fff; 
+}
+
+.tab button {
+    background-color: #ccc;
     border: none;
     outline: none;
     cursor: pointer;
     padding: 14px 16px;
     transition: 0.3s;
     font-size: 17px;
-  }
+    border-radius: 5px 5px 0 0;
+    margin: 0 5px;
+}
+
+.tab button:hover {
+    background-color: #ddd;
+}
+
+.tab button.active {
+    background-color: #fe991c;
+}
   
-  .tab button:hover {
-    background-color: #005f7a;
-  }
-  
-  .tab button.active {
-    background-color: #005f7a;
-  }
-  
-  .tabcontent {
+.tabcontent {
     display: none;
     padding: 6px 12px;
     border: 1px solid #ccc;
     border-top: none;
-  }
+}
+
+  .welcome-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-image: url('portada.png'); 
+    background-size: cover;
+    background-position: center;
+    z-index: 1000;
+    padding: 20px; 
+}
+
+.welcome-container button {
+    border: none;
+    border-radius: 20px; 
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-image: linear-gradient(to top, #000080, #000033);
+    cursor: pointer;
+    outline: none;
+    transition: opacity 0.3s ease;
+    margin-top: auto;
+    width: 30%;
+    margin-bottom: 120px; 
+    height: 56px;
+}
+
+.welcome-container button:hover {
+    opacity: 0.8; 
+}
+
+#SelectorDeQuesos, #OtraPagina {
+    position: fixed;
+    top: 16px;
+    left: 0;
+    width: 100%;
+    max-width: 100vw; 
+    padding: 10px; 
+    box-sizing: border-box;
+    z-index: 99;
+    overflow-y: auto; 
+    max-height: calc(100vh - 100px); 
+}
+
+.buttons-row, .sample-size-row {
+    display: flex;
+    justify-content: center; 
+    gap: 10px; 
+    margin-bottom: 20px; 
+}
+
+.sample-size-row input[type="number"], .sample-size-row button {
+    padding: 10px 20px; 
+    font-size: 16px;
+}
+
+.sample-size-row input[type="number"] {
+    border: 2px solid #ddd; 
+    border-radius: 5px; 
+}
+
+@media (min-width: 768px) {
+    .tab button {
+        padding: 14px 30px;
+    }
+
+    #cheeseBoard {
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    }
+}
+
+/* Media query para dispositivos móviles */
+@media (max-width: 768px) {
+    .welcome-container {
+        background-image: url('portada_responsive.png'); 
+        justify-content: flex-end;
+        padding-bottom: 50px; 
+    }
+
+    .welcome-container button {
+        border: none;
+        border-radius: 20px; 
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #fff;
+        background-image: linear-gradient(to top, #000080, #000033);
+        cursor: pointer;
+        outline: none;
+        transition: opacity 0.3s ease;
+        margin-top: auto;
+        width: 30%;
+        margin-bottom: 120px; 
+        height: 40px;
+    }
+}

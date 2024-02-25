@@ -13,6 +13,15 @@ function openTab(evt, tabName) {
   evt.currentTarget.className += " active";
 }
 
+function showApp() {
+  document.getElementById("welcomeScreen").style.display = "none";
+
+  document.querySelector(".tab").style.display = "block";
+  document.getElementById("SelectorDeQuesos").style.display = "block";
+  document.querySelector(".tab").style.display = "flex";
+  openTab(event, "SelectorDeQuesos");
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   openTab(event, "SelectorDeQuesos");
 });
