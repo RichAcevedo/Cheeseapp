@@ -98,7 +98,7 @@ function updateCheeseCounters(good, bad, context) {
 
   var totalCheese = good + bad;
   var goodCheesePercentage =
-    totalCheese > 0 ? ((good / totalCheese) * 100).toFixed(2) : 0;
+    totalCheese > 0 ? ((bad / totalCheese) * 100).toFixed(2) : 0;
   document.getElementById(percentageId).innerText = goodCheesePercentage + "%";
 }
 
