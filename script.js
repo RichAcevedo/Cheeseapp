@@ -200,8 +200,10 @@ function generateRandomSample() {
 function resetearPorcentaje() {
   percentages = [];
   document.getElementById("prom-general").style.display = "none";
+  /*  Comentado, para que no se genere un promedio nuevo al resetear tablero.
   globalBadCheesePercentage = null;
   globalBadCheesePercentage = Math.floor(Math.random() * (30 - 5 + 1)) + 5;
+  */
   document.getElementById("prom-general").textContent =
     globalBadCheesePercentage ? globalBadCheesePercentage + "%" : "0%";
 
